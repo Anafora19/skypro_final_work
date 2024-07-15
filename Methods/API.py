@@ -1,36 +1,62 @@
 import requests
 
 class BookSearch:
-    base_url = "https://www.chitai-gorod.ru"
+    base_url = "https://www.chitai-gorod.ru/"  # Убедитесь, что этот URL правильный
 
     @classmethod
     def search_by_title(cls, title):
-        response = requests.get(f"{cls.base_url}/search/product", params={"phrase": title})
-        response.raise_for_status()
-        return response
+        try:
+            response = requests.get(f"{cls.base_url}/search", params={"phrase": title})
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTP error occurred: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
 
     @classmethod
     def search_by_author(cls, author):
-        response = requests.get(f"{cls.base_url}/search/product", params={"phrase": author})
-        response.raise_for_status()
-        return response
+        try:
+            response = requests.get(f"{cls.base_url}/search", params={"phrase": author})
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTP error occurred: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
 
     @classmethod
-    def search_with_filter(cls):
-        response = requests.get(f"{cls.base_url}/products", params={"include": "producttexts,publisher,publisherbrand,publisherseries,dates,literatureworkcycle,rating"})
-        response.raise_for_status()
-        return response
+    def search_with_filter(cls, filter_value):
+        try:
+            url = f"{cls.base_url}/catalog/books/"
+            params = {"filter": filter_value}
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTP error occurred: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
+        return None
 
     @classmethod
     def search_nonexistent_title(cls, title):
-        response = requests.get(f"{cls.base_url}/search/product", params={"phrase": title})
-        response.raise_for_status()
-        return response
+        try:
+            response = cls.search_by_title(title)
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTP error occurred: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
 
     @classmethod
     def search_with_special_chars(cls, chars):
-        response = requests.get(f"{cls.base_url}/search/product", params={"phrase": chars})
-        response.raise_for_status()
-        return response
-    
-    
+        try:
+            response = requests.get(f"{cls.base_url}/search/product", params={"phrase": chars})
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTP error occurred: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
